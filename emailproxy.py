@@ -155,13 +155,13 @@ EXTERNAL_AUTH_HTML = '''<html><head><script type="text/javascript">function copy
     var copySource=document.createElement('textarea');copySource.value=targetLink;copySource.style.position='absolute';
     copySource.style.left='-9999px';document.body.appendChild(copySource);copySource.select();
     document.execCommand('copy');document.body.removeChild(copySource);
-    document.getElementById('copy').innerText='✔'}</script><style type="text/css">body{margin:20px auto;line-height:1.3;
+    document.getElementById('copy').innerText=''}</script><style type="text/css">body{margin:20px auto;line-height:1.3;
     font-family:sans-serif;font-size:16px;color:#444;padding:0 24px}</style></head><body>
     <h3 style="margin:0.3em 0;">Login authorisation request for %s</h3>
     <p style="margin-top:0">Click the following link to open your browser and approve the request:</p>
     <p><a href="%s" target="_blank" style="word-wrap:break-word;word-break:break-all">%s</a>
     <a id="copy" onclick="copyLink('%s')" style="margin-left:0.5em;margin-top:0.1em;font-weight:bold;font-size:150%%;
-    text-decoration:none;cursor:pointer;float:right" title="Copy link">⧉</a></p>
+    text-decoration:none;cursor:pointer;float:right" title="Copy link"></a></p>
     <p style="margin-top:2em">After logging in and successfully authorising your account, paste and submit the
     resulting URL from the browser's address bar using the box at the bottom of this page to allow the %s script to
     transparently handle login requests on your behalf in future.</p>
@@ -700,7 +700,7 @@ class OAuth2Helper:
             e.message = json.loads(e.read())
             Log.debug('Error refreshing access token - received invalid response:', e.message)
             if e.code == 400:  # 400 Bad Request typically means re-authentication is required (refresh token expired)
-                raise InvalidToken(e.code, APP_PACKAGE) from e
+                raise InvalidToken(e.code, APP_PACKAGE)
             raise e
 
     @staticmethod
@@ -2112,7 +2112,7 @@ class App:
             if not heading_appended:
                 items.append(pystray.MenuItem('%s servers:' % server_type, None, enabled=False))
                 heading_appended = True
-            items.append(pystray.MenuItem('%s    %s:%d ➝ %s:%d' % (
+            items.append(pystray.MenuItem('%s    %s:%d -> %s:%d' % (
                 ('Y_SSL' if proxy.ssl_connection else 'N_SSL') if sys.platform == 'darwin' else '',
                 proxy.local_address[0], proxy.local_address[1], proxy.server_address[0], proxy.server_address[1]),
                                           None, enabled=False))
